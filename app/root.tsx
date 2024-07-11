@@ -6,6 +6,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import "./tailwind.css";
+import { SWRConfig } from "swr";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +18,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <SWRConfig>{children}</SWRConfig>
         <ScrollRestoration />
         <Scripts />
       </body>
