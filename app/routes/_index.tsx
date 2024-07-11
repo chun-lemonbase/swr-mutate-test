@@ -39,60 +39,51 @@ export default function Index() {
         return await updateData(count.toString());
       },
       {
-        revalidate: true,
-        optimisticData: (currentData, displayedData) => {
-          console.log("optimisticData", { currentData, displayedData });
-          return `optimistic ${count}`;
-        },
-        // populateData: true 는
-        // populateData: (result, currentData) => result; 와 같다.
+        // revalidate: true, // 기본값
+        // optimisticData는 undefined가 기본값
+        // optimisticData: (currentData, displayedData) => {
+        //   console.log("optimisticData", { currentData, displayedData });
+        //   return `optimistic ${count}`;
+        // },
+        // populateCache: true, // 기본값이고
+        // populateCache: (result, currentData) => result; // 와 같다.
         // result는 mutate의 첫번째 인자인 data의 값, 또는 그 리턴값이다.
-        populateCache: (result, currentData) => {
-          console.log("populateCache", { result, currentData });
-          return `populateCache ${result}`;
-        },
+        // populateCache: (result, currentData) => {
+        //   console.log("populateCache", { result, currentData });
+        //   return `populateCache ${result}`;
+        // },
       }
     );
   };
 
+  const handleClick2 = async () => {
+    mutate("click 2", {
+      revalidate: true,
+      // optiomisticData는 mutation data가 cache에 업데이트 되기 전까지만 유효하다.
+      // mutation data가 비동기가 아니고 populateCache: true이면 optimisticData를 지정하는 것은 의미가 없다.
+      optimisticData: (currentData, displayedData) => {
+        console.log("optimisticData", { currentData, displayedData });
+        return `optimistic ${count}`;
+      },
+      // populateCache: false
+      populateCache: (result, currentData) => {
+        console.log("populateCache", { result, currentData });
+        return `populateCache ${result}`;
+      },
+    });
+  };
+
   return (
     <div className="font-sans p-4">
+      <h2>{data ?? "undefined"}</h2>
       <button onClick={handleClick1} type="button">
         버튼1
       </button>
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="list-disc mt-4 pl-6 space-y-2">
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+      <br />
+      <button onClick={handleClick2} type="button">
+        버튼2
+      </button>
+      <br />
     </div>
   );
 }
